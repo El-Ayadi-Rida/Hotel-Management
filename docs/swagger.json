@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Hotel Management API",
-    "description": "Automatically generated API documentation",
+    "description": "The Hotel Management System is a web-based platform designed to streamline hotel operations, including room management, user authentication, and booking services. Built using Node.js (Express.js) for the backend, MySQL for data storage, and React.js for the frontend ->👥 Team Members: Douae BEN SAGA - Imane CHIBANI ->🧑‍💼 Supervisor: Ibtissam TOUAHRI",
     "version": "1.0.0"
   },
   "host": "localhost:5000",
@@ -13,12 +13,16 @@
       "description": "User authentication endpoints"
     },
     {
-      "name": "Hotels",
-      "description": "Hotel management endpoints"
+      "name": "Rooms",
+      "description": "Rooms management endpoints"
     },
     {
       "name": "Other",
       "description": "Other Routes..."
+    },
+    {
+      "name": "Hotels",
+      "description": "Hotel management endpoints"
     }
   ],
   "schemes": [
@@ -235,9 +239,9 @@
       },
       "get": {
         "tags": [
-          "Hotels"
+          "Rooms"
         ],
-        "summary": "Get all hotels",
+        "summary": "Get all rooms",
         "description": "",
         "responses": {
           "200": {
@@ -252,9 +256,9 @@
     "/{id}": {
       "get": {
         "tags": [
-          "Hotels"
+          "Rooms"
         ],
-        "summary": "get hotel by id",
+        "summary": "Get room by Id",
         "description": "",
         "parameters": [
           {
@@ -278,9 +282,9 @@
       },
       "put": {
         "tags": [
-          "Hotels"
+          "Rooms"
         ],
-        "summary": "Update hotel (Admin Only)",
+        "summary": "Update room (Admin Only)",
         "description": "",
         "parameters": [
           {
@@ -300,13 +304,16 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
+                "roomNumber": {
                   "example": "any"
                 },
-                "location": {
+                "type": {
                   "example": "any"
                 },
-                "description": {
+                "price": {
+                  "example": "any"
+                },
+                "status": {
                   "example": "any"
                 }
               }
@@ -333,9 +340,9 @@
       },
       "delete": {
         "tags": [
-          "Hotels"
+          "Rooms"
         ],
-        "summary": "Delete a hotel (Admin Only)",
+        "summary": "Delete room (Admin Only)",
         "description": "",
         "parameters": [
           {
@@ -362,6 +369,91 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{hotelId}": {
+      "post": {
+        "tags": [
+          "Rooms"
+        ],
+        "summary": "Create a new room (Admin Only)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "roomNumber": {
+                  "example": "any"
+                },
+                "type": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/hotel/{hotelId}": {
+      "get": {
+        "tags": [
+          "Rooms"
+        ],
+        "summary": "Get all rooms for a specific hotel",
+        "description": "",
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"

@@ -1,17 +1,19 @@
 const swaggerAutogen = require("swagger-autogen")();
 
+
 const doc = {
   info: {
     title: "Hotel Management API",
-    description: "Automatically generated API documentation",
+    description: "The Hotel Management System is a web-based platform designed to streamline hotel operations, including room management, user authentication, and booking services. Built using Node.js (Express.js) for the backend, MySQL for data storage, and React.js for the frontend ->👥 Team Members: Douae BEN SAGA - Imane CHIBANI ->🧑‍💼 Supervisor: Ibtissam TOUAHRI",
     version: "1.0.0",
   },
   host: "localhost:5000",
   schemes: ["http"],
   tags: [
     { name: "Authentication", description: "User authentication endpoints" },
-    { name: "Hotels", description: "Hotel management endpoints" },
+    { name: "Rooms", description: "Rooms management endpoints" },
     { name: "Other", description: "Other Routes..." },
+    { name: "Hotels", description: "Hotel management endpoints" },
   ],
   components: {
     securitySchemes: {
@@ -26,7 +28,7 @@ const doc = {
 };
 
 const outputFile = "./docs/swagger.json"; // Swagger JSON file (generated)
-const routes = ["./routes/other.js" , "./routes/auth.js", "./routes/hotel.js"]; // Scans all route files
+const routes = ["./routes/other.js" , "./routes/auth.js", "./routes/hotel.js", "./routes/room.js"]; // Scans all route files
 
 swaggerAutogen(outputFile, routes, doc).then(() => {
   console.log("📄 Structured Swagger JSON generated successfully");

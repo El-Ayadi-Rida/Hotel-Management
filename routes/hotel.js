@@ -1,20 +1,25 @@
 const express = require("express");
 const { authenticateToken, authorizeRole } = require("../middlewares/authMiddleware");
-const Hotel = require("../models/Hotel");
+const Hotel = require("../models/hotel");
+
+
 
 const router = express.Router();
 
 router.post("/", authenticateToken, authorizeRole("admin"), async (req, res) => {
 
+
         /* #swagger.tags = ['Hotels']
             #swagger.summary = "Create a new hotel (Admin Only)"
         */
 
-  try {
+  try {    
     const { name, location, description } = req.body;
+    
     const hotel = await Hotel.create({ name, location, description, adminId: req.user.id });
 
-    res.status(201).json(hotel);
+    res.status(201).json({ message: "Hotel created successfully", hotel });
+
   } catch (error) {
     res.status(500).json({ error: "Hotel creation failed", details: error.message });
   }
