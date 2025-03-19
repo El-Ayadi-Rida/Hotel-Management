@@ -27,9 +27,11 @@ router.post("/", authenticateToken, authorizeRole("admin"), async (req, res) => 
 
 // 📌 Get All Hotels
 router.get("/", async (req, res) => {
+
     /* #swagger.tags = ['Hotels']
         #swagger.summary = "Get all hotels"
     */
+
   try {
     const hotels = await Hotel.findAll();
     res.json(hotels);
@@ -57,7 +59,7 @@ router.get("/:id", async (req, res) => {
 
 // 📌 Update Hotel (Admin Only)
 router.put("/:id", authenticateToken, authorizeRole("admin"), async (req, res) => {
-    
+  
         /* #swagger.tags = ['Hotels']
             #swagger.summary = "Update  hotel (Admin Only)"
         */

@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./docs/swagger.json"); // Load generated Swagger file
 const createAdminIfNotExists = require("./utils/adminSetup");
@@ -11,11 +12,20 @@ const authRoutes = require("./routes/auth");
 const hotelRoutes = require("./routes/hotel");
 const otherRoutes = require("./routes/other");
 const roomRoutes = require("./routes/room");
+const bookingRoutes = require("./routes/booking");
 
 
 const { authenticateToken, authorizeRole } = require("./middlewares/authMiddleware");
 
 const app = express();
+
+// ✅ Enable CORS Middleware
+app.use(cors({
+    origin: process.env.FRONTEND_URL || "*", // Allow frontend URL
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization"
+  }));
+  
 app.use(express.json());
 
 
@@ -40,6 +50,9 @@ app.use("/other", otherRoutes);
 
 // Room Routes
 app.use("/rooms", roomRoutes);
+
+// Booking Routes
+app.use("/bookings", bookingRoutes);
 
 
 

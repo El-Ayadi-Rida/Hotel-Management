@@ -12,7 +12,7 @@ const createAdminIfNotExists = async () => {
         password: 'admin123',
         role: "admin",
       });
-      console.log("✅ Default Admin Created: admin@example.com / admin123");
+      console.log("✅ Default Admin Created: admin@hotel.com / admin123");
     } else {
       console.log("✅ Admin already exists. No action needed.");
     }

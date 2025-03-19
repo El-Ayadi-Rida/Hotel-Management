@@ -11,9 +11,10 @@ const doc = {
   schemes: ["http"],
   tags: [
     { name: "Authentication", description: "User authentication endpoints" },
-    { name: "Rooms", description: "Rooms management endpoints" },
-    { name: "Other", description: "Other Routes..." },
     { name: "Hotels", description: "Hotel management endpoints" },
+    { name: "Rooms", description: "Rooms management endpoints" },
+    { name: "Bookings", description: "Bookings management endpoints" },
+    { name: "Other", description: "Other Routes..." },
   ],
   components: {
     securitySchemes: {
@@ -28,7 +29,7 @@ const doc = {
 };
 
 const outputFile = "./docs/swagger.json"; // Swagger JSON file (generated)
-const routes = ["./routes/other.js" , "./routes/auth.js", "./routes/hotel.js", "./routes/room.js"]; // Scans all route files
+const routes = ["./routes/auth.js", "./routes/hotel.js", "./routes/room.js" , "./routes/booking.js" , "./routes/other.js"]; // Scans all route files
 
 swaggerAutogen(outputFile, routes, doc).then(() => {
   console.log("📄 Structured Swagger JSON generated successfully");

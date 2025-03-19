@@ -1,0 +1,38 @@
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+
+const Booking = sequelize.define("Booking", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  userId: { 
+    type: DataTypes.INTEGER, 
+    allowNull: false, 
+    references: { model: "users", key: "id" },
+    onDelete: "CASCADE"
+  },
+  roomId: { 
+    type: DataTypes.INTEGER, 
+    allowNull: false, 
+    references: { model: "rooms", key: "id" },
+    onDelete: "CASCADE"
+  },
+  checkInDate: { type: DataTypes.DATE, allowNull: false },
+  checkOutDate: { type: DataTypes.DATE, allowNull: false },
+  status: { 
+    type: DataTypes.ENUM("Pending", "Confirmed", "Cancelled"), 
+    defaultValue: "Pending" 
+  }
+}, {
+  timestamps: true,
+  tableName: "bookings"
+});
+
+// ✅ Define Associations
+Booking.associate = (models) => {
+    Booking.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+    Booking.belongsTo(models.Room, { foreignKey: "roomId", as: "room" });
+    models.Room.hasMany(models.Booking, { foreignKey: "roomId", as: "bookings" }); // ✅ Ensure Room knows it has bookings
+  };
+  
+  
+
+module.exports = Booking;

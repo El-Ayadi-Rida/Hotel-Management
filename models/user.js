@@ -18,4 +18,10 @@ User.beforeCreate(async (user) => {
   user.password = await bcrypt.hash(user.password, 10);
 });
 
+// ✅ Define Associations
+User.associate = (models) => {
+  User.hasMany(models.Booking, { foreignKey: "userId", as: "bookings" });
+};
+
+
 module.exports = User;

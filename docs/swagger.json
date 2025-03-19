@@ -13,103 +13,26 @@
       "description": "User authentication endpoints"
     },
     {
+      "name": "Hotels",
+      "description": "Hotel management endpoints"
+    },
+    {
       "name": "Rooms",
       "description": "Rooms management endpoints"
     },
     {
-      "name": "Other",
-      "description": "Other Routes..."
+      "name": "Bookings",
+      "description": "Bookings management endpoints"
     },
     {
-      "name": "Hotels",
-      "description": "Hotel management endpoints"
+      "name": "Other",
+      "description": "Other Routes..."
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
-    "/protected": {
-      "get": {
-        "tags": [
-          "Other"
-        ],
-        "summary": "Protected Route (Requires Authentication)",
-        "description": "",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/admin": {
-      "get": {
-        "tags": [
-          "Other"
-        ],
-        "summary": "Admin Only Route",
-        "description": "",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/customer": {
-      "get": {
-        "tags": [
-          "Other"
-        ],
-        "summary": "Customer Only Route",
-        "description": "",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
     "/register": {
       "post": {
         "tags": [
@@ -239,13 +162,26 @@
       },
       "get": {
         "tags": [
-          "Rooms"
+          "Bookings"
         ],
-        "summary": "Get all rooms",
+        "summary": "Get all bookings (Admin Only)",
         "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -256,9 +192,9 @@
     "/{id}": {
       "get": {
         "tags": [
-          "Rooms"
+          "Bookings"
         ],
-        "summary": "Get room by Id",
+        "summary": "Get a booking by ID",
         "description": "",
         "parameters": [
           {
@@ -266,11 +202,22 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -282,9 +229,9 @@
       },
       "put": {
         "tags": [
-          "Rooms"
+          "Bookings"
         ],
-        "summary": "Update room (Admin Only)",
+        "summary": "Update a booking (Admin Only)",
         "description": "",
         "parameters": [
           {
@@ -304,13 +251,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "roomNumber": {
+                "checkInDate": {
                   "example": "any"
                 },
-                "type": {
-                  "example": "any"
-                },
-                "price": {
+                "checkOutDate": {
                   "example": "any"
                 },
                 "status": {
@@ -340,9 +284,9 @@
       },
       "delete": {
         "tags": [
-          "Rooms"
+          "Bookings"
         ],
-        "summary": "Delete room (Admin Only)",
+        "summary": "Delete a booking (Admin Only)",
         "description": "",
         "parameters": [
           {
@@ -457,6 +401,219 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/book/{roomId}": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Create a new booking (Customer Only)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "checkInDate": {
+                  "example": "any"
+                },
+                "checkOutDate": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Get all bookings for a specific user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{id}/cancel": {
+      "put": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "Cancel a booking (Admin or Customer)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/protected": {
+      "get": {
+        "tags": [
+          "Other"
+        ],
+        "summary": "Protected Route (Requires Authentication)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/admin": {
+      "get": {
+        "tags": [
+          "Other"
+        ],
+        "summary": "Admin Only Route",
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/customer": {
+      "get": {
+        "tags": [
+          "Other"
+        ],
+        "summary": "Customer Only Route",
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }

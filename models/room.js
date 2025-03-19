@@ -22,4 +22,11 @@ const Room = sequelize.define("Room", {
   tableName: "rooms"
 });
 
+Room.associate = (models) => {
+  Room.hasMany(models.Booking, { foreignKey: "roomId", as: "bookings" });
+  models.Booking.belongsTo(models.Room, { foreignKey: "roomId", as: "room" }); // ✅ Add this line
+};
+
+
+
 module.exports = Room;

@@ -7,15 +7,23 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 const db = {};
 
-// ✅ Manually Import Models (To Avoid Auto-loading Issues)
-db.User = require("./user");
-db.Hotel = require("./hotel");
+// ✅ Load Models
+fs.readdirSync(__dirname)
+  .filter((file) => file !== basename && file.endsWith(".js"))
+  .forEach((file) => {
+    const modelFile = require(path.join(__dirname, file)); 
+    const model = modelFile(sequelize, Sequelize.DataTypes); // ✅ Instantiate Model
+    db[model.name] = model;
+  });
 
-// ✅ Associate Models
-db.Hotel.belongsTo(db.User, { foreignKey: "adminId", as: "admin" });
-db.User.hasMany(db.Hotel, { foreignKey: "adminId", as: "hotels" });
+// ✅ Call Associations
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
-// ✅ Add Sequelize Instances
+// ✅ Attach Sequelize Instance
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
