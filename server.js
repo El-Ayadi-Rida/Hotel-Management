@@ -13,6 +13,8 @@ const hotelRoutes = require("./routes/hotel");
 const otherRoutes = require("./routes/other");
 const roomRoutes = require("./routes/room");
 const bookingRoutes = require("./routes/booking");
+const customerRoutes = require('./routes/customer');
+
 
 
 const { authenticateToken, authorizeRole } = require("./middlewares/authMiddleware");
@@ -27,7 +29,6 @@ app.use(cors({
   }));
   
 app.use(express.json());
-
 
 
 // 📌 Ensure an admin exists before starting the server
@@ -53,6 +54,9 @@ app.use("/rooms", roomRoutes);
 
 // Booking Routes
 app.use("/bookings", bookingRoutes);
+
+// customers Routes
+app.use('/customers', customerRoutes);
 
 
 

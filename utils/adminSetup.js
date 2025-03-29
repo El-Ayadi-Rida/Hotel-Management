@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const { User } = require("../models");
 
 // Function to create a default admin user if none exists
 const createAdminIfNotExists = async () => {

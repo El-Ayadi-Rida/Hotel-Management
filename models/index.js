@@ -2,28 +2,39 @@ const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
-const config = require("../config/config.json")["development"];
+const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/../config/config.json")[env];
+
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 const db = {};
 
-// ✅ Load Models
+// Load all models dynamically
 fs.readdirSync(__dirname)
-  .filter((file) => file !== basename && file.endsWith(".js"))
-  .forEach((file) => {
-    const modelFile = require(path.join(__dirname, file)); 
-    const model = modelFile(sequelize, Sequelize.DataTypes); // ✅ Instantiate Model
+  .filter(file => (
+    file.indexOf(".") !== 0 &&
+    file !== basename &&
+    file.slice(-3) === ".js"
+  ))
+  .forEach(file => {
+    const modelPath = path.join(__dirname, file);
+    const imported = require(modelPath);
+
+    const model = typeof imported === 'function'
+      ? imported(sequelize, Sequelize.DataTypes) // ✅ Model factory
+      : imported; // ✅ Already defined model
+
     db[model.name] = model;
   });
 
-// ✅ Call Associations
-Object.keys(db).forEach((modelName) => {
+// Register associations if defined
+Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
 });
 
-// ✅ Attach Sequelize Instance
+// Export everything
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

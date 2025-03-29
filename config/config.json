@@ -2,22 +2,22 @@
   "development": {
     "username": "hotel_user",
     "password": "hotel_pass",
-    "database": "database_development",
-    "host": "127.0.0.1",
+    "database": "hotel_management",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
+    "username": "hotel_user",
+    "password": "hotel_pass",
+    "database": "hotel_management",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "hotel_user",
+    "password": "hotel_pass",
+    "database": "hotel_management",
+    "host": "localhost",
     "dialect": "mysql"
   }
 }

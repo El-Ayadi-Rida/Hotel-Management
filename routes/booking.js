@@ -1,8 +1,6 @@
 const express = require("express");
 const { authenticateToken, authorizeRole } = require("../middlewares/authMiddleware");
-const Room = require("../models/room");
-const Booking = require("../models/booking");
-const User = require("../models/user");
+const { User, Booking , Room } = require('../models');
 
 
 const router = express.Router();
