@@ -1,6 +1,6 @@
 const express = require("express");
 const { authenticateToken, authorizeRole } = require("../middlewares/authMiddleware");
-const { User, Booking , Room } = require('../models');
+const { User, Booking , Room , Hotel } = require('../models');
 
 
 const router = express.Router();
@@ -78,7 +78,7 @@ router.get("/:id", authenticateToken , async (req, res) => {
 /* ----------------------------------------------------------
 📌 Get Bookings for a Specific User (Customer Only)
 ---------------------------------------------------------- */
-router.get("/user/:userId", authenticateToken , authorizeRole("customer") , async (req, res) => {
+router.get("/user/:userId", authenticateToken , async (req, res) => {
 
   /* #swagger.tags = ['Bookings']
       #swagger.summary = "Get all bookings for a specific user"
@@ -93,7 +93,23 @@ router.get("/user/:userId", authenticateToken , authorizeRole("customer") , asyn
       return res.status(400).json({ error: "Invalid userId", details: "The specified user does not exist." });
     }
 
-    const bookings = await Booking.findAll({ where: { userId } });
+    const bookings = await Booking.findAll({ 
+      where: { userId } ,
+      include: [
+        {
+          model: Room,
+          as: 'room',
+          attributes: ['roomNumber', 'type', 'price', 'status'] ,
+          include: [
+            {
+              model: Hotel,
+              as: 'hotel',
+              attributes: ['name', 'location']
+            }
+          ]
+        }
+      ]
+    });
 
     res.json({ userId, bookings });
   } catch (error) {

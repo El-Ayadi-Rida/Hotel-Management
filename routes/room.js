@@ -1,6 +1,7 @@
 const express = require("express");
 const { authenticateToken, authorizeRole } = require("../middlewares/authMiddleware");
 const { Room, Hotel } = require('../models');
+const { Op } = require("sequelize");
 
 
 const router = express.Router();
@@ -14,7 +15,7 @@ router.post("/:hotelId", authenticateToken, authorizeRole("admin"), async (req, 
 
   try {
     const { hotelId } = req.params;
-    const { roomNumber, type, price } = req.body;
+    const { roomNumber, type, price , adults , children , pets } = req.body;
     
     // ✅ Check if Hotel Exists
     const hotelExists = await Hotel.findByPk(hotelId);
@@ -22,7 +23,7 @@ router.post("/:hotelId", authenticateToken, authorizeRole("admin"), async (req, 
       return res.status(400).json({ error: "Invalid hotelId", details: "The specified hotel does not exist." });
     }
 
-    const room = await Room.create({ hotelId, roomNumber, type, price });
+    const room = await Room.create({ hotelId, roomNumber, type, price , adults , children , pets });
     
     res.status(201).json({ message: "Room created successfully", room });
   } catch (error) {
@@ -38,7 +39,40 @@ router.get("/", async (req, res) => {
         */
 
   try {
-    const rooms = await Room.findAll();
+    // const rooms = await Room.findAll();
+    const { adults, children, pets, status } = req.query;
+
+    const filters = {};
+
+    // Filter by guest capacity
+    if (adults) {
+      filters.adults = { [Op.gte]: parseInt(adults) };
+    }
+
+    if (children) {
+      filters.children = { [Op.gte]: parseInt(children) };
+    }
+
+    // Filter by pets
+    if (pets !== undefined) {
+      filters.pets = pets === 'true';
+    }
+
+    // Filter by status (e.g. Available / Booked)
+    if (status) {
+      filters.status = status;
+    }
+
+    const rooms = await Room.findAll({
+      where: filters,
+      include: [
+        {
+          model: Hotel,
+          as: "hotel",
+          attributes: ["name"]
+        }
+      ]
+    });
     res.json(rooms);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve rooms", details: error.message });
@@ -95,11 +129,11 @@ router.put("/:id", authenticateToken, authorizeRole("admin"), async (req, res) =
   */
 
   try {
-    const { roomNumber, type, price, status } = req.body;
+    const { roomNumber, type, price, status , adults , children , pets } = req.body;
     const room = await Room.findByPk(req.params.id);
     if (!room) return res.status(404).json({ error: "Room not found" });
 
-    await room.update({ roomNumber, type, price, status });
+    await room.update({ roomNumber, type, price, status , adults , children , pets });
     res.json({ message: "Room updated successfully", room });
   } catch (error) {
     res.status(500).json({ error: "Room update failed", details: error.message });

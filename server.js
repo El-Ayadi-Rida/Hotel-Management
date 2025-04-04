@@ -14,6 +14,8 @@ const otherRoutes = require("./routes/other");
 const roomRoutes = require("./routes/room");
 const bookingRoutes = require("./routes/booking");
 const customerRoutes = require('./routes/customer');
+const analyticsRoutes = require('./routes/analytics');
+
 
 
 
@@ -57,6 +59,10 @@ app.use("/bookings", bookingRoutes);
 
 // customers Routes
 app.use('/customers', customerRoutes);
+
+// analytics Routes
+app.use('/analytics', analyticsRoutes);
+
 
 
 

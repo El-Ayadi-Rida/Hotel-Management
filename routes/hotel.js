@@ -1,6 +1,7 @@
 const express = require("express");
 const { authenticateToken, authorizeRole } = require("../middlewares/authMiddleware");
-const { Hotel } = require('../models');
+const { Sequelize } = require('sequelize');
+const { Hotel , Room } = require('../models');
 
 
 const router = express.Router();
@@ -32,7 +33,21 @@ router.get("/", async (req, res) => {
     */
 
   try {
-    const hotels = await Hotel.findAll();
+    const hotels = await Hotel.findAll({
+        attributes: {
+          include: [
+            [Sequelize.fn('COUNT', Sequelize.col('rooms.id')), 'roomCount']
+          ]
+        },
+        include: [
+          {
+            model: Room,
+            as: 'rooms',
+            attributes: [] // we don’t want full room data
+          }
+        ],
+        group: ['Hotel.id']  
+    });
     res.json(hotels);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve hotels", details: error.message });

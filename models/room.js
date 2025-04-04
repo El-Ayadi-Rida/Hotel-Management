@@ -17,7 +17,23 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM("Available", "Booked"),
       allowNull: false,
       defaultValue: "Available",
-    }
+    },
+    pets: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    adults: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 2
+    },
+    children: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    
   }, {
     timestamps: true, // Enable createdAt & updatedAt
     tableName: "rooms"
@@ -25,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Room.associate = (models) => {
     Room.hasMany(models.Booking, { foreignKey: "roomId", as: "bookings" });
-    Room.belongsTo(models.Hotel, { foreignKey: 'hotelId', as: 'hotel' });
+    Room.belongsTo(models.Hotel, { foreignKey: 'hotelId', as: 'hotel' }); // ✅
   };
 
 

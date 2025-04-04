@@ -30,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
   // // ✅ Define Associations
   Booking.associate = (models) => {
     Booking.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
-    Booking.belongsTo(models.Room, { foreignKey: "roomId", as: "room" });
-    };
+    Booking.belongsTo(models.Room, { foreignKey: 'roomId', as: 'room' }); // ✅ must exist
+  };
     
     
 
