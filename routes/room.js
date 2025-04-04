@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
 
   try {
     // const rooms = await Room.findAll();
-    const { adults, children, pets, status } = req.query;
+    const { adults, children, pets, status , location , type } = req.query;
 
     const filters = {};
 
@@ -62,6 +62,12 @@ router.get("/", async (req, res) => {
     if (status) {
       filters.status = status;
     }
+    if (type) {
+      filters.type = type;
+    }
+
+    console.log(location);
+    
 
     const rooms = await Room.findAll({
       where: filters,
@@ -69,7 +75,15 @@ router.get("/", async (req, res) => {
         {
           model: Hotel,
           as: "hotel",
-          attributes: ["name"]
+          attributes: ["name" , "location"] ,
+          where: location
+          ? {
+              location: {
+                [Op.like]: `%${location}%`  // ✅ MySQL-compatible partial match
+              }
+            }
+          : undefined
+
         }
       ]
     });
