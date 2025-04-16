@@ -21,7 +21,16 @@ module.exports = (sequelize, DataTypes) => {
     status: { 
       type: DataTypes.ENUM("Pending", "Confirmed", "Cancelled"), 
       defaultValue: "Pending" 
+    },
+    amount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false
+    },
+    config: {
+      type: DataTypes.JSON, // For nested info: adults, children, pets
+      allowNull: false
     }
+    
   }, {
     timestamps: true,
     tableName: "bookings"

@@ -16,19 +16,32 @@ router.post("/book/:roomId", authenticateToken, authorizeRole("customer"), async
 
   try {
     const { roomId } = req.params;
-    const { checkInDate, checkOutDate } = req.body;
+    const { checkInDate, checkOutDate, amount, config } = req.body;
 
     // ✅ Check if Room Exists
     const room = await Room.findByPk(roomId);
-    if (!room) return res.status(400).json({ error: "Room not found" });
+    if (!room || room.status === 'Booked') return res.status(400).json({ error: "Room not found" });
+
+    if (!config?.adults || config.adults < 1) {
+      return res.status(400).json({ error: 'At least 1 adult is required' });
+    }
+
 
     // ✅ Create booking
     const booking = await Booking.create({
       userId: req.user.id,
       roomId,
       checkInDate,
-      checkOutDate
+      checkOutDate,
+      amount,
+      config,
+      status: 'Confirmed'
     });
+
+    await Room.update(
+      { status: "Booked" },
+      { where: { id: roomId } }
+    );
 
     res.status(201).json({ message: "Booking created successfully", booking });
   } catch (error) {
