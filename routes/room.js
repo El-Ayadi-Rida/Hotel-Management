@@ -1,6 +1,6 @@
 const express = require("express");
 const { authenticateToken, authorizeRole } = require("../middlewares/authMiddleware");
-const { Room, Hotel } = require('../models');
+const { Room, Hotel , Review , User } = require('../models');
 const { Op } = require("sequelize");
 
 
@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
 
   try {
     // const rooms = await Room.findAll();
-    const { adults, children, pets, status , location , type } = req.query;
+    const { adults, children, pets, status , location , type , hotelId } = req.query;
 
     const filters = {};
 
@@ -65,6 +65,9 @@ router.get("/", async (req, res) => {
     if (type) {
       filters.type = type;
     }
+    if (hotelId) {
+      filters.hotelId = hotelId;
+    }
 
     console.log(location);
     
@@ -84,7 +87,13 @@ router.get("/", async (req, res) => {
             }
           : undefined
 
+        },
+        {
+          model: Review,
+          as: "reviews",
+          include: [{ model: User, as: "user", attributes: ["username"] }]
         }
+
       ]
     });
     res.json(rooms);
@@ -126,7 +135,18 @@ router.get("/:id", async (req, res) => {
   */
 
   try {
-    const room = await Room.findByPk(req.params.id);
+    const room = await Room.findByPk(
+      req.params.id ,
+      {
+      include: [
+        {
+          model: Review,
+          as: "reviews",
+          include: [{ model: User, as: "user", attributes: ["username"] }]
+        }
+      ]
+    }
+    );
     if (!room) return res.status(404).json({ error: "Room not found" });
 
     res.json(room);
@@ -171,5 +191,26 @@ router.delete("/:id", authenticateToken, authorizeRole("admin"), async (req, res
     res.status(500).json({ error: "Room deletion failed", details: error.message });
   }
 });
+
+router.post("/reviews/:roomId", authenticateToken, authorizeRole("customer"), async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const userId = req.user.id;
+    const roomId = req.params.roomId;
+
+    // Optional: prevent duplicate reviews
+    const existing = await Review.findOne({ where: { userId, roomId } });
+    if (existing) {
+      return res.status(400).json({ error: "You already reviewed this room" });
+    }
+
+    const review = await Review.create({ rating, comment, userId, roomId });
+
+    res.status(201).json({ message: "Review added", review });
+  } catch (error) {
+    res.status(500).json({ error: "Review failed", details: error.message });
+  }
+});
+
 
 module.exports = router;
